@@ -1,17 +1,24 @@
 import express from 'express';
 import cors from 'cors';
-import {routes} from "./routes";
+import { routes } from "./routes";
+import { AppDataSource } from "./databaseConnection/app-data-source";
+import cookieParser from "cookie-parser";
 
-const app = express();
+AppDataSource.initialize().then(() => {
 
-app.use(express.json());
+    const app = express();
 
-app.use(cors({
-    origin: ['http://localhost:3000']
-}));
+    app.use(express.json());
+    app.use(cookieParser());
+    app.use(cors({
+        credentials: true,
+        origin: ['http://localhost:3000']
+    }));
 
-routes(app);
+    routes(app);
 
-app.listen(8080, () => {
-    console.log("listening to port 8080");
-})
+    app.listen(8080, () => {
+        console.log("listening to port 8080");
+    })
+});
+
