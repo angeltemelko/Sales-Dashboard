@@ -3,7 +3,7 @@ import { LoginValidation, RegisterValidation } from "../validation/register.vali
 import { User } from "../entity/user.entity";
 import { AppDataSource } from "../databaseConnection/app-data-source";
 import bcrypt from "bcryptjs"
-import { sign, verify } from "jsonwebtoken";
+import { sign } from "jsonwebtoken";
 
 export const Register = async (request: Request, response: Response) => {
     const body = request.body;
@@ -59,7 +59,7 @@ export const Login = async (request: Request, response: Response) => {
 
     const token = sign({
         id: user.id
-    }, "secret");
+    }, process.env.SECRET_KEY as string);
 
     response.cookie('jwt', token, {
         httpOnly: true,
@@ -72,21 +72,53 @@ export const Login = async (request: Request, response: Response) => {
 }
 
 export const AuthenticatedUser = async (request: Request, response: Response) => {
-    const jwt = request.cookies['jwt'];
+    const {password, ...user} = request['user']
+    response.send(user);
+}
 
-    const payload: any = verify(jwt, "secret");
+export const Logout = async (request: Request, response: Response) => {
 
-    if (!payload) {
-        response.status(401).send({
-            message: "unauthenticated"
+    response.cookie('jwt', '', {maxAge: 0});
+
+    response.send({
+        message: 'success'
+    });
+}
+
+export const UpdateInfo = async (request: Request, response: Response) => {
+
+    const user = request['user']
+
+    const repository = AppDataSource.getRepository(User);
+
+    await repository.update(user.id,request.body);
+
+    const {password, password_confirmed, ...updatedUser} = await repository.findOneBy({
+        id: user.id
+    })
+
+    response.status(200).send(updatedUser)
+}
+
+export const UpdatePassword = async (request: Request, response: Response) => {
+
+    const user = request['user']
+
+    if (request.body.password !== user.password) {
+        return response.status(400).send({
+            message: 'Password not correct'
         })
     }
 
     const repository = AppDataSource.getRepository(User);
 
-    const {password, password_confirmed, ...user}: any = await repository.findOneBy({
-        id: payload.id
+    await repository.update(user.id, {
+        password: await bcrypt.hash(request.body.password, 10),
+        password_confirmed: await bcrypt.hash(request.body.password, 10),
+    });
+
+    return response.status(200).send({
+        message: 'Password updated successfully'
     })
 
-    response.send(user);
 }
