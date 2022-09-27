@@ -6,7 +6,7 @@ export const AppDataSource = new DataSource({
     port: 3306,
     username: 'root',
     password: 'admin',
-    database: 'node_admin',
+    database: 'sales_db',
     entities: [
         'src/entity/*.ts'
     ],

@@ -3,9 +3,9 @@ import { verify } from "jsonwebtoken";
 import { AppDataSource } from "../databaseConnection/app-data-source";
 import { User } from "../entity/user.entity";
 
-export const AuthMiddleware = async (response: Response, request: Request, next: NextFunction) => {
+export const AuthMiddleware = async (request: Request, response: Response, next: NextFunction) => {
     try {
-        const jwt = request.cookies['jwt'];
+        const jwt = request.cookies.jwt;
 
         const payload: any = verify(jwt, process.env.SECRET_KEY as string);
 

@@ -5,6 +5,8 @@ import { AppDataSource } from "../databaseConnection/app-data-source";
 import bcrypt from "bcryptjs"
 import { sign } from "jsonwebtoken";
 
+export type requestWithUser = Request & {user: User}
+
 export const Register = async (request: Request, response: Response) => {
     const body = request.body;
 
@@ -71,7 +73,7 @@ export const Login = async (request: Request, response: Response) => {
     });
 }
 
-export const AuthenticatedUser = async (request: Request, response: Response) => {
+export const AuthenticatedUser = async (request: requestWithUser, response: Response) => {
     const {password, ...user} = request['user']
     response.send(user);
 }
@@ -85,7 +87,7 @@ export const Logout = async (request: Request, response: Response) => {
     });
 }
 
-export const UpdateInfo = async (request: Request, response: Response) => {
+export const UpdateInfo = async (request: requestWithUser, response: Response) => {
 
     const user = request['user']
 
@@ -93,14 +95,21 @@ export const UpdateInfo = async (request: Request, response: Response) => {
 
     await repository.update(user.id,request.body);
 
-    const {password, password_confirmed, ...updatedUser} = await repository.findOneBy({
+    const foundUser = await repository.findOneBy({
         id: user.id
     })
 
-    response.status(200).send(updatedUser)
+    if(foundUser){
+        const {password, password_confirmed, ...updatedUser} = foundUser
+        response.status(200).send(updatedUser)
+    }
+
+    response.status(404).send({
+        message: 'User not found'
+    })
 }
 
-export const UpdatePassword = async (request: Request, response: Response) => {
+export const UpdatePassword = async (request: requestWithUser, response: Response) => {
 
     const user = request['user']
 
