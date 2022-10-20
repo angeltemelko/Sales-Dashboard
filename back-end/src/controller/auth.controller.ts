@@ -5,7 +5,7 @@ import { AppDataSource } from "../databaseConnection/app-data-source";
 import bcrypt from "bcryptjs"
 import { sign } from "jsonwebtoken";
 
-export type requestWithUser = Request & {user: User}
+export type requestWithUser = Request & { user: User }
 
 export const Register = async (request: Request, response: Response) => {
     const body = request.body;
@@ -93,13 +93,13 @@ export const UpdateInfo = async (request: requestWithUser, response: Response) =
 
     const repository = AppDataSource.getRepository(User);
 
-    await repository.update(user.id,request.body);
+    await repository.update(user.id, request.body);
 
     const foundUser = await repository.findOneBy({
         id: user.id
     })
 
-    if(foundUser){
+    if (foundUser) {
         const {password, password_confirmed, ...updatedUser} = foundUser
         response.status(200).send(updatedUser)
     }
