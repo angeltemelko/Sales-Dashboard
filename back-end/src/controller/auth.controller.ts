@@ -8,7 +8,7 @@ import { sign } from "jsonwebtoken";
 export type requestWithUser = Request & { user: User }
 
 export const Register = async (request: Request, response: Response) => {
-    const body = request.body;
+    const body: User = request.body;
 
     const {error} = RegisterValidation.validate(body);
 
@@ -111,7 +111,7 @@ export const UpdateInfo = async (request: requestWithUser, response: Response) =
 
 export const UpdatePassword = async (request: requestWithUser, response: Response) => {
 
-    const user = request['user']
+    const user = request.user
 
     if (request.body.password !== user.password) {
         return response.status(400).send({

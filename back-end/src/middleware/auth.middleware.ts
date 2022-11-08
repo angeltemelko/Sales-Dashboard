@@ -1,9 +1,14 @@
 import { NextFunction, Request, Response } from "express";
-import { verify } from "jsonwebtoken";
+import {Jwt, verify} from "jsonwebtoken";
 import { AppDataSource } from "../databaseConnection/app-data-source";
 import { User } from "../entity/user.entity";
 
-export const AuthMiddleware = async (request: Request, response: Response, next: NextFunction) => {
+export interface IGetUserAuthInfoRequest extends Request {
+    user: User | null,
+    jwt: Jwt
+}
+
+export const AuthMiddleware = async (request: IGetUserAuthInfoRequest, response: Response, next: NextFunction) => {
     try {
         const jwt = request.cookies.jwt;
 
@@ -17,7 +22,7 @@ export const AuthMiddleware = async (request: Request, response: Response, next:
 
         const repository = AppDataSource.getRepository(User);
 
-        request['user'] = await repository.findOneBy({
+        request.user = await repository.findOneBy({
             id: payload.id
         })
 

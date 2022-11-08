@@ -28,7 +28,7 @@ export const GetUserByIdAsync = async (request: Request, response: Response) => 
 
     const repository = AppDataSource.getRepository(User);
 
-    const {password, password_confirmed, ...user} = await repository.findOne({
+    const {password , password_confirmed, ...user} = await repository.findOne({
         where: {
             id: Number(request.params.id)
         },
