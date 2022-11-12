@@ -1,11 +1,12 @@
 {
-  "name": "Sales-Dashboard",
+  "name": "sales-dashboard",
   "version": "1.0.0",
   "description": "",
   "main": "index.ts",
   "scripts": {
     "start": "nodemon src/index.ts",
-    "roles-seed": "ts-node src/seeders/role.seeder.ts"
+    "roles-seed": "ts-node src/seeders/role.seeder.ts",
+    "product-seed": "ts-node src/seeders/product.seeder.ts"
   },
   "repository": {
     "type": "git",
@@ -19,6 +20,7 @@
   },
   "homepage": "https://github.com/angeltemelko/Sales-Dashboard#readme",
   "dependencies": {
+    "@faker-js/faker": "^7.6.0",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
@@ -36,6 +38,7 @@
     "@types/cors": "^2.8.12",
     "@types/express": "^4.17.14",
     "@types/jsonwebtoken": "^8.5.9",
-    "@types/node": "^18.7.18"
+    "@types/node": "^18.7.18",
+    "typescript": "~4.5.5"
   }
 }

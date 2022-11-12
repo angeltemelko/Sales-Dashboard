@@ -4,9 +4,25 @@ import {Product} from "../entity/product.entity";
 
 export const GetProductsAsync = async (request: Request, response: Response) => {
 
+    const page: number = parseInt(request.params.page as string || '1');
+    const take: number = parseInt(request.params.take as string || '10');
+
     const productRepository = AppDataSource.getRepository(Product);
 
-    response.send(await productRepository.find());
+    const [data, total] = await productRepository.findAndCount({
+            take,
+            skip: (page - 1) * take
+    });
+
+    response.status(200).send({
+        data,
+        meta: {
+            total,
+            take,
+            lastPage: Math.ceil(total / take)
+        }
+    })
+
 
 }
 export const CreateProductAsync = async (request: Request, response: Response) => {

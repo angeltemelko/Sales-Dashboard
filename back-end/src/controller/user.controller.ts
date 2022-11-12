@@ -5,17 +5,28 @@ import bcrypt from "bcryptjs";
 
 export const GetUsersAsync = async (request: Request, response: Response) => {
 
+    const page = parseInt(request.params.page as string || '1');
+    const take = parseInt(request.params.take as string || '10');
+
     const repository = AppDataSource.getRepository(User);
 
-    const users = await repository.find({
+    const [users, total] = await repository.findAndCount({
+        take,
+        skip: (page - 1) * take,
         relations: ['role']
     });
 
-    response.send(users.map(u => {
-        const {password, password_confirmed, ...data} = u;
-
-        return data;
-    }));
+    response.send({
+        data: users.map(u => {
+            const {password, password_confirmed, ...data} = u;
+            return data;
+        }),
+        meta: {
+            total,
+            take,
+            lastPage: Math.ceil(total / take)
+        }
+    });
 }
 
 export const GetUserByIdAsync = async (request: Request, response: Response) => {
@@ -28,6 +39,7 @@ export const GetUserByIdAsync = async (request: Request, response: Response) => 
 
     const repository = AppDataSource.getRepository(User);
 
+    // @ts-ignore
     const {password , password_confirmed, ...user} = await repository.findOne({
         where: {
             id: Number(request.params.id)
@@ -94,6 +106,7 @@ export const UpdateUserByIdAsync = async (request: Request, response: Response) 
     })
 
 
+    // @ts-ignore
     const {password, password_confirmed, ...updatedUser} = await repository.findOne({
         where: {
             id: Number(request.params.id)

@@ -22,6 +22,7 @@ import {
     GetProductsAsync,
     UpdateProductByIdAsync
 } from "./controller/product.controller";
+import {PermissionMiddleware} from "./middleware/permission.middleware";
 
 export const routes = (router: Router) => {
 
@@ -34,26 +35,26 @@ export const routes = (router: Router) => {
     router.put('/api/users/password', AuthMiddleware, UpdatePassword)
 
     // user controller
-    router.get('/api/users', AuthMiddleware, GetUsersAsync)
-    router.post('/api/users', AuthMiddleware, CreateUserAsync)
-    router.get('api/users/:id', AuthMiddleware, GetUserByIdAsync)
-    router.put('api/users/:id', AuthMiddleware, UpdateUserByIdAsync)
-    router.delete('api/users/:id', AuthMiddleware, DeleteUserByIdAsync)
+    router.get('/api/users', AuthMiddleware, PermissionMiddleware("users"), GetUsersAsync)
+    router.post('/api/users', AuthMiddleware, PermissionMiddleware("users"), CreateUserAsync)
+    router.get('api/users/:id', AuthMiddleware, PermissionMiddleware("users"), GetUserByIdAsync)
+    router.put('api/users/:id', AuthMiddleware, PermissionMiddleware("users"), UpdateUserByIdAsync)
+    router.delete('api/users/:id', AuthMiddleware, PermissionMiddleware("users"), DeleteUserByIdAsync)
 
     // permission controller
     router.get('api/permissions', AuthMiddleware, GetPermissionsAsync)
 
     // roles controller
-    router.get('api/roles', AuthMiddleware, GetRolesAsync)
-    router.post('api/role', AuthMiddleware, CreateRoleAsync)
-    router.delete('api/role/:id', AuthMiddleware, DeleteRoleByIdAsync)
-    router.put('api/role/:id', AuthMiddleware, UpdateRoleByIdAsync)
-    router.get('api/role/:id',AuthMiddleware, GetRoleByIdAsync)
+    router.get('api/roles', AuthMiddleware, PermissionMiddleware("roles"), GetRolesAsync)
+    router.post('api/role', AuthMiddleware, PermissionMiddleware("roles"), CreateRoleAsync)
+    router.delete('api/role/:id', AuthMiddleware, PermissionMiddleware("roles"), DeleteRoleByIdAsync)
+    router.put('api/role/:id', AuthMiddleware, PermissionMiddleware("roles"), UpdateRoleByIdAsync)
+    router.get('api/role/:id',AuthMiddleware, PermissionMiddleware("roles"), GetRoleByIdAsync)
 
     // product controller
-    router.get('api/products', AuthMiddleware, GetProductsAsync)
-    router.post('api/product', AuthMiddleware, CreateProductAsync)
-    router.delete('api/product/:id', AuthMiddleware, DeleteProductByIdAsync)
-    router.put('api/product/:id', AuthMiddleware, UpdateProductByIdAsync)
-    router.get('api/product/:id',AuthMiddleware, GetProductByIdAsync)
+    router.get('api/products', AuthMiddleware, PermissionMiddleware("products"), GetProductsAsync)
+    router.post('api/product', AuthMiddleware, PermissionMiddleware("products"), CreateProductAsync)
+    router.delete('api/product/:id', AuthMiddleware, PermissionMiddleware("products"), DeleteProductByIdAsync)
+    router.put('api/product/:id', AuthMiddleware, PermissionMiddleware("products"), UpdateProductByIdAsync)
+    router.get('api/product/:id',AuthMiddleware, PermissionMiddleware("products"), GetProductByIdAsync)
 }

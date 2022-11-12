@@ -4,8 +4,8 @@ import { AppDataSource } from "../databaseConnection/app-data-source";
 import { User } from "../entity/user.entity";
 
 export interface IGetUserAuthInfoRequest extends Request {
-    user: User | null,
-    jwt: Jwt
+    user?: User | null,
+    jwt?: Jwt
 }
 
 export const AuthMiddleware = async (request: IGetUserAuthInfoRequest, response: Response, next: NextFunction) => {
@@ -22,8 +22,11 @@ export const AuthMiddleware = async (request: IGetUserAuthInfoRequest, response:
 
         const repository = AppDataSource.getRepository(User);
 
-        request.user = await repository.findOneBy({
-            id: payload.id
+        request.user = await repository.findOne({
+            where: {
+                id: payload.id
+            },
+            relations: ['role', 'role.permissions']
         })
 
         next();

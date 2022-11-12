@@ -4,10 +4,10 @@ import { User } from "../entity/user.entity";
 import { AppDataSource } from "../databaseConnection/app-data-source";
 import bcrypt from "bcryptjs"
 import { sign } from "jsonwebtoken";
-
-export type requestWithUser = Request & { user: User }
+import { requestWithUser } from "../Dtos/dtos";
 
 export const Register = async (request: Request, response: Response) => {
+
     const body: User = request.body;
 
     const {error} = RegisterValidation.validate(body);
@@ -74,8 +74,13 @@ export const Login = async (request: Request, response: Response) => {
 }
 
 export const AuthenticatedUser = async (request: requestWithUser, response: Response) => {
-    const {password, ...user} = request['user']
-    response.send(user);
+
+    if(request.user != undefined) {
+        const {password, ...user} = request.user
+        response.send(user);
+    }
+
+    response.send(null)
 }
 
 export const Logout = async (request: Request, response: Response) => {
@@ -89,14 +94,14 @@ export const Logout = async (request: Request, response: Response) => {
 
 export const UpdateInfo = async (request: requestWithUser, response: Response) => {
 
-    const user = request['user']
+    const user = request.user
 
     const repository = AppDataSource.getRepository(User);
 
-    await repository.update(user.id, request.body);
+    await repository.update(user!.id, request.body);
 
     const foundUser = await repository.findOneBy({
-        id: user.id
+        id: user!.id
     })
 
     if (foundUser) {
@@ -113,7 +118,7 @@ export const UpdatePassword = async (request: requestWithUser, response: Respons
 
     const user = request.user
 
-    if (request.body.password !== user.password) {
+    if (request.body.password !== user?.password) {
         return response.status(400).send({
             message: 'Password not correct'
         })
@@ -121,7 +126,7 @@ export const UpdatePassword = async (request: requestWithUser, response: Respons
 
     const repository = AppDataSource.getRepository(User);
 
-    await repository.update(user.id, {
+    await repository.update(user!.id, {
         password: await bcrypt.hash(request.body.password, 10),
         password_confirmed: await bcrypt.hash(request.body.password, 10),
     });
