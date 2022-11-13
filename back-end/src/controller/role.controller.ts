@@ -45,7 +45,7 @@ export const UpdateRoleByIdAsync = async (request: Request, response: Response) 
   roleRepository.save({
     id: roleId,
     name,
-    permissions: permission.map((id) => ({id}))
+    permissions: permission.map((id: number) => ({id}))
   }).then(product => {
     response.send(product);
   })

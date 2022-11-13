@@ -23,6 +23,7 @@ import {
     UpdateProductByIdAsync
 } from "./controller/product.controller";
 import {PermissionMiddleware} from "./middleware/permission.middleware";
+import { ExportCSV, GetGraphDataAsync, GetOrdersAsync } from "./controller/order.controller";
 
 export const routes = (router: Router) => {
 
@@ -57,4 +58,9 @@ export const routes = (router: Router) => {
     router.delete('api/product/:id', AuthMiddleware, PermissionMiddleware("products"), DeleteProductByIdAsync)
     router.put('api/product/:id', AuthMiddleware, PermissionMiddleware("products"), UpdateProductByIdAsync)
     router.get('api/product/:id',AuthMiddleware, PermissionMiddleware("products"), GetProductByIdAsync)
+
+    // order controller
+    router.get('api/orders', AuthMiddleware, PermissionMiddleware("orders"), GetOrdersAsync)
+    router.post('api/orders/export-csv', AuthMiddleware, PermissionMiddleware("orders"), ExportCSV)
+    router.get('api/orders/export-csv', AuthMiddleware, PermissionMiddleware("orders"), GetGraphDataAsync)
 }
