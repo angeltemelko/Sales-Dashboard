@@ -1,28 +1,27 @@
-import * as dotenv from "dotenv";
+import * as dotenv from 'dotenv';
 
 dotenv.config();
-import express from "express";
-import cors from "cors";
-import { routes } from "./routes";
-import { AppDataSource } from "./databaseConnection/app-data-source";
-import cookieParser from "cookie-parser";
+import express from 'express';
+import cors from 'cors';
+import { routes } from './routes';
+import { AppDataSource } from './databaseConnection/app-data-source';
+import cookieParser from 'cookie-parser';
 
 AppDataSource.initialize().then(() => {
-  const app = express();
+    const app = express();
 
-  app.use(express.json());
-  app.use(cookieParser());
-  app.use(
-    cors({
-      credentials: true,
-      origin: ["http://localhost:3000"],
-    })
-  );
+    app.use(express.json());
+    app.use(cookieParser());
+    app.use(
+        cors({
+            credentials: true,
+            origin: ['http://localhost:3000'],
+        })
+    );
 
-  routes(app);
+    routes(app);
 
-  app.listen(8080, () => {
-    console.log("listening to port 8080");
-  });
+    app.listen(8080, () => {
+        console.log('listening to port 8080');
+    });
 });
-
