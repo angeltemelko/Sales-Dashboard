@@ -5,8 +5,8 @@ import bcrypt from "bcryptjs";
 
 export const GetUsersAsync = async (request: Request, response: Response) => {
 
-    const page = parseInt(request.params.page as string || '1');
-    const take = parseInt(request.params.take as string || '10');
+    const page = parseInt(request.query.page as string || '1');
+    const take = parseInt(request.query.take as string || '10');
 
     const repository = AppDataSource.getRepository(User);
 
@@ -30,7 +30,7 @@ export const GetUsersAsync = async (request: Request, response: Response) => {
 }
 
 export const GetUserByIdAsync = async (request: Request, response: Response) => {
-
+    console.log("lol");
     if(request.body === null) {
         response.send({
             message: "Object cannot be empty"

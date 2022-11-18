@@ -1,11 +1,12 @@
 import { AppDataSource } from "../databaseConnection/app-data-source";
 import { Permission } from "../entity/permission.entity";
 import { Role } from "../entity/role.entity";
+import { Repository } from "typeorm";
 
 AppDataSource.initialize().then(async () => {
     const permissionsRepository = AppDataSource.getRepository(Permission);
 
-    const permissionNames = [
+    const permissionNames: string[] = [
         "view_users",
         "edit_users",
         "view_roles",
@@ -16,7 +17,7 @@ AppDataSource.initialize().then(async () => {
         "edit_orders",
     ];
 
-    let permissions = [];
+    let permissions: Permission[] = [];
 
     for (const permission of permissionNames) {
         permissions.push(
@@ -26,7 +27,7 @@ AppDataSource.initialize().then(async () => {
         );
     }
 
-    const roleRepository = AppDataSource.getRepository(Role);
+    const roleRepository: Repository<Role> = AppDataSource.getRepository(Role);
 
     await roleRepository.save({
         name: "Admin",
@@ -36,14 +37,14 @@ AppDataSource.initialize().then(async () => {
     await roleRepository.save({
         name: "Editor",
         permissions: permissions.filter(
-            (permissions) => permissions.name !== "edit_roles"
+            (permissions: Permission) => permissions.name !== "edit_roles"
         ),
     });
 
     await roleRepository.save({
-        name: "Editor",
+        name: "Viewer",
         permissions: permissions.filter(
-            (permissions) => !permissions.name.startsWith("edit")
+            (permissions: Permission) => !permissions.name.startsWith("edit")
         ),
     });
 

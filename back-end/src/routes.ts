@@ -37,10 +37,10 @@ export const routes = (router: Router) => {
 
     // user controller
     router.get('/api/users', AuthMiddleware, PermissionMiddleware("users"), GetUsersAsync)
-    router.post('/api/users', AuthMiddleware, PermissionMiddleware("users"), CreateUserAsync)
-    router.get('api/users/:id', AuthMiddleware, PermissionMiddleware("users"), GetUserByIdAsync)
-    router.put('api/users/:id', AuthMiddleware, PermissionMiddleware("users"), UpdateUserByIdAsync)
-    router.delete('api/users/:id', AuthMiddleware, PermissionMiddleware("users"), DeleteUserByIdAsync)
+    router.post('/api/user', AuthMiddleware, PermissionMiddleware("users"), CreateUserAsync)
+    router.get('api/user/:id', AuthMiddleware, PermissionMiddleware("users"), GetUserByIdAsync)
+    router.put('api/user/:id', AuthMiddleware, PermissionMiddleware("users"), UpdateUserByIdAsync)
+    router.delete('api/user/:id', AuthMiddleware, PermissionMiddleware("users"), DeleteUserByIdAsync)
 
     // permission controller
     router.get('api/permissions', AuthMiddleware, GetPermissionsAsync)

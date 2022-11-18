@@ -9,7 +9,7 @@ AppDataSource.initialize().then(async () => {
   for (let i = 0; i < 30; i++) {
     await productRepository.save({
       title: faker.faker.lorem.words(2),
-      description: faker.faker.lorem.words(50),
+      description: faker.faker.lorem.words(20),
       image: faker.faker.image.imageUrl(200, 200, "", true),
       price: randomInt(10, 100),
     });

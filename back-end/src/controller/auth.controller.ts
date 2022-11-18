@@ -30,6 +30,9 @@ export const Register = async (request: Request, response: Response) => {
     email: body.email,
     password: await bcrypt.hash(body.password, 10),
     password_confirmed: await bcrypt.hash(body.password, 10),
+    role: {
+      id: 3
+    }
   });
 
   response.send(user);
