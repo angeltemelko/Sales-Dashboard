@@ -21,7 +21,9 @@ AppDataSource.initialize().then(() => {
 
     routes(app);
 
-    app.listen(8080, () => {
-        console.log('listening to port 8080');
+    const port: number = 8000;
+
+    app.listen(port, () => {
+        console.log(`listening to port ${port}`);
     });
 });
