@@ -1,22 +1,35 @@
+import axios from "axios";
 import React, { SyntheticEvent, useState } from "react";
 import "./Register.css";
+import { Navigate } from "react-router-dom";
 
 const Register = () => {
   const [first_name, setFirstName] = useState("");
   const [last_name, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmed_password, setConfirmedPass] = useState("");
+  const [password_confirmed, setConfirmedPass] = useState("");
+  const [redirect, setRedirect] = useState(false);
 
-  function onSubmit(event: SyntheticEvent) {
+  const onSubmit = async (event: SyntheticEvent) => {
     event.preventDefault();
-    console.log({
-      first_name: first_name,
-      last_name: last_name,
-      email: email,
-      password: password,
-      confirmed_password: confirmed_password,
-    });
+
+    const response = await axios
+      .post("http://localhost:8000/api/register", {
+        first_name: first_name,
+        last_name: last_name,
+        email: email,
+        password: password,
+        password_confirmed: password_confirmed,
+      })
+      .catch((error) => console.log(error))
+      .then(() => setRedirect(true));
+
+    console.log(response);
+  };
+
+  if (redirect) {
+    return <Navigate to="/login" />;
   }
 
   return (
@@ -28,31 +41,31 @@ const Register = () => {
             type="text"
             className="form-control"
             placeholder="Joe"
-            onChange={event => setFirstName(event.target.value)}
+            onChange={(event) => setFirstName(event.target.value)}
           />
           <input
             type="text"
             className="form-control"
             placeholder="Doe"
-            onChange={event => setLastName(event.target.value)}
+            onChange={(event) => setLastName(event.target.value)}
           />
           <input
             type="email"
             className="form-control"
             placeholder="name@example.com"
-            onChange={event => setEmail(event.target.value)}
+            onChange={(event) => setEmail(event.target.value)}
           />
           <input
             type="password"
             className="form-control"
             placeholder="Password"
-            onChange={event => setPassword(event.target.value)}
+            onChange={(event) => setPassword(event.target.value)}
           />
           <input
             type="password"
             className="form-control"
             placeholder="Confirmed Password"
-            onChange={event => setConfirmedPass(event.target.value)}
+            onChange={(event) => setConfirmedPass(event.target.value)}
           />
           <button className="w-100 btn btn-lg btn-primary" type="submit">
             Sign in
