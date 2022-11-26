@@ -15,7 +15,7 @@ const Register = () => {
     event.preventDefault();
 
     const response = await axios
-      .post("http://localhost:8000/api/register", {
+      .post("register", {
         first_name: first_name,
         last_name: last_name,
         email: email,
@@ -68,7 +68,7 @@ const Register = () => {
             onChange={(event) => setConfirmedPass(event.target.value)}
           />
           <button className="w-100 btn btn-lg btn-primary" type="submit">
-            Sign in
+            Register
           </button>
           <p className="mt-5 mb-3 text-muted">&copy; 2017–2022</p>
         </form>

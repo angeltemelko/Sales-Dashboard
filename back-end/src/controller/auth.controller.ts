@@ -32,10 +32,7 @@ export const Register = async (
         last_name: body.last_name,
         email: body.email,
         password: await bcrypt.hash(body.password, 10),
-        password_confirmed: await bcrypt.hash(body.password, 10),
-        role: {
-            id: 3,
-        },
+        password_confirmed: await bcrypt.hash(body.password, 10)
     });
 
     response.send(user);
@@ -44,7 +41,7 @@ export const Register = async (
 export const Login = async (
     request: Request,
     response: Response
-): Promise<Response | void> => {
+) => {
     const { error } = LoginValidation.validate(request.body);
 
     if (error) {
@@ -90,12 +87,14 @@ export const AuthenticatedUser = async (
     request: requestWithUser,
     response: Response
 ): Promise<Response | void>  => {
+    if(request.user == undefined)
+    {
+        response.status(400).send("User cannot be empty");
+    }
     if (request.user != undefined) {
-        const { password, ...user } = request.user;
+        const { password, password_confirmed, ...user } = request.user;
         response.send(user);
     }
-
-    response.send(null);
 };
 
 export const Logout = async (

@@ -1,52 +1,33 @@
 version: '3.8'
 
 x-common-variables: &common-variables
-  MYSQL_DATABASE: sales_db
-  MYSQL_PASSWORD: admin
+  MYSQL_DATABASE: 'sales_db'
+  MYSQL_PASSWORD: 'admin'
+  MYSQL_USER: 'root'
 
 services:
-  mysql_db:
-    image: mysql
+  mysql-development:
+    image: mysql:latest
     container_name: mysqlcontainer
     restart: unless-stopped
-    cap_add:
-      - SYS_NICE
-    volumes:
-      - "./setup.sql:/docker-entrypoint-initdb.d/setup.sql"
     ports:
       - "3306:3306"
-    expose:
-      - 3306
     environment:
       <<: *common-variables
-      MYSQL_ROOT_PASSWORD: MYSQL_ROOT_PASSWORD
-      MYSQL_HOST: localhost
-    networks:
-      - internalnet
-
-#  nginx:
-#    depends_on:
-#      - back-end
-#      #- front-end
-#    restart: always
-#    build:
-#      dockerfile: Dockerfile
-#      context: ./nginx
-#    ports:
-#      - "3050:80"
+      MYSQL_ROOT_PASSWORD: 'admin'
 
   back-end:
     build:
       dockerfile: Dockerfile
       context: "./back-end"
     depends_on:
-      - mysql_db
+      - mysql-development
     volumes:
       - /app/node_modules
       - ./back-end:/app
     environment:
       <<: *common-variables
-      MYSQL_HOST_IP: mysql_db
+      MYSQL_HOST_IP: mysql-development
     ports:
       - "8000:8000"
 
@@ -67,9 +48,9 @@ services:
     ports:
       - "7000:8080"
     depends_on:
-      - mysql_db
+      - mysql-development
     environment:
-      ADMINER_DEFAULT_SERVER: mysql_db
+      ADMINER_DEFAULT_SERVER: mysql-development
 
 networks:
   internalnet:

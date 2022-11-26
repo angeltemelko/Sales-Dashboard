@@ -12,6 +12,8 @@ export const AuthMiddleware = async (
     try {
         const jwt = request.cookies.jwt;
 
+        console.log(jwt);
+
         const payload: any = verify(jwt, process.env.SECRET_KEY as string);
 
         if (!payload) {
